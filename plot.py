@@ -26,16 +26,17 @@ class Plotter:
       rax = axs
       nax = axs
 
-    for oDF in self.oldDF:
-      if r: rax.plot(oDF["rAngle"], linewidth=1)
-      if n: nax.plot(oDF["nAngle"], linewidth=1)
+    if r: rax.plot(self.df["gAngle"], "k-", linewidth=1, label="Desired Angle")
+
+    for i, oDF in enumerate(self.oldDF):
+      if r: rax.plot(oDF["rAngle"], linewidth=1, label=f"Rocket Angle ({i+1})")
+      if n: nax.plot(oDF["nAngle"], linewidth=1, label=f"Nozzle Angle ({i+1})")
 
     if r:
-      rax.plot(self.df["gAngle"], "k-", label="Desired Angle", linewidth=1)
-      rax.plot(self.df["rAngle"], "b-", label="Rocket Angle", linewidth=1)
+      rax.plot(self.df["rAngle"], "b-", linewidth=1, label=f"Rocket Angle ({len(self.oldDF)+1})")
     if n:
       nax.plot(self.df["gAngle"], "k-", linewidth=1)
-      nax.plot(self.df["nAngle"], "b-", label="Nozzle Angle", linewidth=1)
+      nax.plot(self.df["nAngle"], "b-", linewidth=1, label=f"Nozzle Angle ({len(self.oldDF)+1})")
 
     if r:
       rax.set_title("Rocket Angle")
@@ -68,6 +69,7 @@ class Plotter:
 
   def clear(self):
     self.oldDF = []
+    self.df = None
 
     self.close()
 
