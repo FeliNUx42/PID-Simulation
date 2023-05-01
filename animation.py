@@ -1,4 +1,4 @@
-from pyglet import window, shapes, app, gl, text
+import pygame
 import math
 
 
@@ -15,77 +15,79 @@ class Animation:
 
     self.df = None
     self.i = None
-    self.finished = None
 
-    self.window = None
-    self.rocket = None
-    self.nozzle = None
+    self.screen = None
+    self.rSurface = None
+    self.nSurface = None
 
   def run(self):
-    try:
-      app.run(interval=1/self.fR)
-    except:
-      pass
+    pygame.init()
+    self.screen = pygame.display.set_mode((self.wS, self.wS))
+    pygame.display.set_caption("PID Animation")
+    clock = pygame.time.Clock()
+
+    while True:
+      for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+          return pygame.quit()
+        
+      self.screen.fill((36,36,36))
+      self.draw()
+      
+      pygame.display.update()
+      clock.tick(self.fR)
 
   def set(self, val, df):
-    self.wS = int(val["wSize"])
+    self.wS = val["wSize"]
     self.fR = val["fRate"]
-    self.rL = val["rLength"]
-    self.rW = val["rWidth"]
-    self.nL = val["nLength"]
-    self.nW = val["nWidth"]
-    self.nR = val["nRotPoint"]
+    self.rL = rL = val["rLength"]
+    self.rW = rW = val["rWidth"]
+    self.nL = nL = val["nLength"]
+    self.nW = nW = val["nWidth"]
+    self.nR = nR = val["nRotPoint"]
     self.iter = val["iter"]
 
     self.df = df
     self.i = 0
-    self.done = text.Label(
-      "Done",
-      x=20, y=20, 
-      font_size=16,
-      color=(122,127,130,255)
+
+    self.rSurface = pygame.Surface((rW, rL+2*rW), pygame.SRCALPHA)
+    pygame.draw.polygon(
+      self.rSurface, (86,91,94),
+      ((rW/2,0), (0,rW), (0,rL+rW), (rW,rL+rW), (rW,rW))
     )
 
-    self.window = window.Window(self.wS,self.wS, resizable=True)
-
-    self.rocket = shapes.Polygon(
-      (0,0), (self.rW,0), (self.rW,self.rL),
-      (self.rW/2,self.rL+self.rW), (0,self.rL),
-      color=(86,91,94)
-    )
-    self.rocket.anchor_position = (self.rW/2, self.rL/2)
-
-    self.nozzle = shapes.Rectangle(
-      x=0, y=0, width=self.nW, height=self.nL,
-      color=(122,127,130)
-    )
-    self.nozzle.anchor_position = (self.nW/2, self.nL-self.nR)
-
-    @self.window.event
-    def on_draw():
-      self.draw()
+    self.nSurface = pygame.Surface((nW, 2*(nL-nR)), pygame.SRCALPHA)
+    pygame.draw.rect(self.nSurface, (122,127,130), (0,nL-2*nR,nW,nL))
 
   def draw(self):
-    if self.i > self.iter:
-      self.done.draw()
-      return
-
     rA = self.df.loc[self.i]["rAngle"]
     nA = self.df.loc[self.i]["nAngle"]
-    self.rocket.rotation = rA
-    self.nozzle.rotation = rA + nA
 
     self.i += 1
 
-    self.rocket.x = self.window.width/2
-    self.rocket.y = self.window.height/2
+    rPos = (self.wS/2, self.wS/2)
+    nPos = [
+      self.wS/2 + math.sin(math.radians(rA)) * self.rL/2,
+      self.wS/2 + math.cos(math.radians(rA)) * self.rL/2
+    ]
 
-    t = math.radians(rA) + 0
+    rRotated = pygame.transform.rotate(self.rSurface, rA)    
+    nRotated = pygame.transform.rotate(self.nSurface, rA+nA)
 
-    self.nozzle.x = self.window.width/2 - math.sin(t) * self.rL/2
-    self.nozzle.y = self.window.height/2 - math.cos(t) * self.rL/2
+    rRect = rRotated.get_rect(center=rPos)
+    nRect = nRotated.get_rect(center=nPos)
 
-    gl.glClearColor(0.141,0.141,0.141,1)
-    self.window.clear()
-    self.nozzle.draw()
-    self.rocket.draw()
+    self.screen.blit(nRotated, nRect)
+    self.screen.blit(rRotated, rRect)
+
+    if self.i > self.iter:
+      font = pygame.font.Font(None, 36)
+      text = font.render("Finished", True, (122,127,130))
+      self.screen.blit(text, (30,self.wS-48))
+
+      self.i -= 1
+
+      self.df.loc[self.i]["rAngle"] = int(self.df.loc[self.i]["rAngle"])
+      self.df.loc[self.i]["nAngle"] = int(self.df.loc[self.i]["nAngle"])
+
+

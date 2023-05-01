@@ -17,7 +17,7 @@ default = {
 
   "iter": 300,
   "fRate": 60,
-  "rAnim": False,
+  "rAnim": True,
   "rGraph": True,
   "nGraph": True
 }
