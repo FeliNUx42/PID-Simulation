@@ -129,10 +129,10 @@ class SimulationFrame(ct.CTkFrame):
     self.rAnim = Parameter(self, "Rocket Animation", switch=True)
     self.rAnim.grid(row=3, column=0, pady=5, sticky="ew")
 
-    self.rGraph = Parameter(self, "Rocket Angle Graph", switch=True)
+    self.rGraph = Parameter(self, "Rocket Angle Plot", switch=True)
     self.rGraph.grid(row=4, column=0, pady=5, sticky="ew")
 
-    self.nGraph = Parameter(self, "Nozzle Angle Graph", switch=True)
+    self.nGraph = Parameter(self, "Nozzle Angle Plot", switch=True)
     self.nGraph.grid(row=5, column=0, pady=(5, 25), sticky="ew")
 
 
