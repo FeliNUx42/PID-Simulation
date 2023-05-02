@@ -19,14 +19,14 @@ PID-Simulation is a simple Python-based simulation of a Proportional-Integral-De
 To run the simulation, simply execute the `main.py` script:
 
 ```bash
-python main.py
+python3 main.py
 ```
 
 The simulation will open a graphical user interface where you can enter the PID controller parameters (proportional, integral, and derivative gains), as well as the simulation duration, and a lot more stuff. Once you have entered these values, the simulation will run and display an animation and a plot of the system response.
 
 ## Examples
 
-[Here](media/demo.mp4) is an example of how to run the simulation.
+[Here](https://raw.githubusercontent.com/FeliNUx42/PID-Simulation/master/media/demo.mp4) is an example of how to run the simulation.
 
 
 ## License
