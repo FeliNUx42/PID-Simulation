@@ -23,6 +23,7 @@ default = {
 }
 
 logs = {
+  "middle": [],
   "gAngle": [],
   "rAngle": [],
   "nAngle": []

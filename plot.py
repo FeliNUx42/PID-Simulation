@@ -35,7 +35,7 @@ class Plotter:
     if r:
       rax.plot(self.df["rAngle"], "b-", linewidth=1, label=f"Rocket Angle ({len(self.oldDF)+1})")
     if n:
-      nax.plot(self.df["gAngle"], "k-", linewidth=1)
+      nax.plot(self.df["middle"], "k-", linewidth=1)
       nax.plot(self.df["nAngle"], "b-", linewidth=1, label=f"Nozzle Angle ({len(self.oldDF)+1})")
 
     if r:

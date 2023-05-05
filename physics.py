@@ -5,6 +5,7 @@ import math
 
 class Simulation:
   def __init__(self):
+    self.gAngle = None
     self.rAngle = None
     self.rAngularVel = None
     self.rMMMOI = None
@@ -30,6 +31,7 @@ class Simulation:
       self.log()
   
   def set(self, val):
+    self.gAngle = math.radians(val["gAngle"])
     self.rAngle = math.radians(val["rAngle"])
     self.rAngularVel = 0
     self.rMMMOI = val["mmoi"]
@@ -55,7 +57,7 @@ class Simulation:
     return max(min(diff, n), -diff)
 
   def step(self):
-    perc = self.rAngle
+    err = perc = self.rAngle - self.gAngle
     derv = self.rAngle - self.oldAngle
     intgr = sum(self.error)
 
@@ -69,11 +71,12 @@ class Simulation:
     self.rAngle -= self.rAngularVel
 
     self.error.pop(0)
-    self.error.append(self.rAngle)
+    self.error.append(err)
 
   def log(self):
     self.df.loc[len(self.df)] = [
       0,
+      math.degrees(self.gAngle),
       math.degrees(self.rAngle),
       math.degrees(self.nAngle)
     ]
